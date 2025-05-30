@@ -117,6 +117,44 @@ function CineStreamApp() {
         </div>
       </nav>
 
+      {/* Search bar at the top, just below the navbar */}
+      <div
+        className="searchbar-bar-top"
+        style={{
+          width: '100%',
+          background: colors.primary,
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          padding: '15px 0 10px', // compact but spacious
+          marginTop: 64, // account for fixed nav height
+          boxSizing: 'border-box',
+          zIndex: 99
+        }}
+      >
+        <div className="container" style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <input
+            value={query}
+            onChange={handleSearchChange}
+            placeholder="Search by title, genre, or actor..."
+            style={{
+              width: 340,
+              maxWidth: '100%',
+              padding: '11px 20px',
+              fontSize: 17,
+              borderRadius: 8,
+              border: '1px solid #252525',
+              background: '#181818',
+              color: colors.secondary,
+              outline: 'none',
+              boxShadow: '0 1px 8px 0 #00000033',
+              marginRight: 0,
+              transition: 'border 0.2s',
+              fontWeight: 500
+            }}
+            aria-label="Search movies"
+          />
+        </div>
+      </div>
+
       {/* Hero / Featured Movie Banner */}
       <header
         className="featured-banner"
@@ -126,7 +164,7 @@ function CineStreamApp() {
             : colors.primary,
           color: colors.secondary,
           minHeight: 320,
-          marginTop: 70,
+          marginTop: 0, // No top margin since search bar now pushes down content
           display: 'flex',
           alignItems: 'center',
         }}
@@ -181,27 +219,6 @@ function CineStreamApp() {
         background: colors.primary
       }}>
         <div className="container" style={{ maxWidth: 1200 }}>
-          {/* Search */}
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '34px 0 18px', alignItems: 'center' }}>
-            <input
-              value={query}
-              onChange={handleSearchChange}
-              placeholder="Search by title, genre, or actor..."
-              style={{
-                width: 320,
-                padding: '10px 18px',
-                fontSize: 16,
-                borderRadius: 6,
-                border: '1px solid #343434',
-                background: '#1E1E1E',
-                color: colors.secondary,
-                outline: 'none',
-                marginRight: 20,
-                transition: 'border 0.2s',
-              }}
-            />
-          </div>
-
           {/* Movie Grid */}
           <section id="catalog">
             <div
