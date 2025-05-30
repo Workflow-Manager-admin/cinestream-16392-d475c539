@@ -56,13 +56,23 @@ function CineStreamApp() {
     // ...add more movies as desired
   ];
 
+  // Local input state for the search bar (what the user types)
+  const [inputValue, setInputValue] = useState('');
+  // Actual "query" used for filtering and display; changed only on search button
   const [query, setQuery] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   // PUBLIC_INTERFACE
-  function handleSearchChange(e) {
-    setQuery(e.target.value);
+  function handleInputChange(e) {
+    setInputValue(e.target.value);
+  }
+
+  // PUBLIC_INTERFACE
+  function handleSearchClick(e) {
+    e.preventDefault();
+    // Update the query state to the current input value when user clicks "Search"
+    setQuery(inputValue.trim());
   }
 
   function openMovieModal(movie) {
