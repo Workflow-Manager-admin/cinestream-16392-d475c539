@@ -76,14 +76,23 @@ function CineStreamApp() {
 
   const featuredMovie = movieCatalog.find(m => m.featured) || movieCatalog[0];
 
-  const filteredMovies = movieCatalog.filter(movie => {
+  // Efficient filtering: check title, all genres (split by comma), and actor names for matches.
+  const filteredMovies = React.useMemo(() => {
+    if (!query.trim()) return movieCatalog;
     const lQuery = query.toLowerCase();
-    return (
-      movie.title.toLowerCase().includes(lQuery) ||
-      (movie.genre && movie.genre.toLowerCase().includes(lQuery)) ||
-      (movie.actors && movie.actors.join(' ').toLowerCase().includes(lQuery))
-    );
-  });
+    return movieCatalog.filter(movie => {
+      // Check title
+      if (movie.title && movie.title.toLowerCase().includes(lQuery)) return true;
+
+      // Check each genre (movie.genre may be "Comedy, Drama", so split by comma and check each)
+      if (movie.genre && movie.genre.split(',').some(g => g.trim().toLowerCase().includes(lQuery))) return true;
+
+      // Check actors
+      if (movie.actors && movie.actors.some(a => a.toLowerCase().includes(lQuery))) return true;
+
+      return false;
+    });
+  }, [query, movieCatalog]);
 
   // Responsive classes and color variables
   const colors = {
