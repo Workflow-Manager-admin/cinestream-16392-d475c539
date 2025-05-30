@@ -149,28 +149,65 @@ function CineStreamApp() {
           zIndex: 99
         }}
       >
-        <div className="container" style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <input
-            value={query}
-            onChange={handleSearchChange}
-            placeholder="Search by title, genre, or actor..."
-            style={{
-              width: 340,
-              maxWidth: '100%',
-              padding: '11px 20px',
-              fontSize: 17,
-              borderRadius: 8,
-              border: '1px solid #252525',
-              background: '#181818',
-              color: colors.secondary,
-              outline: 'none',
-              boxShadow: '0 1px 8px 0 #00000033',
-              marginRight: 0,
-              transition: 'border 0.2s',
-              fontWeight: 500
-            }}
-            aria-label="Search movies"
-          />
+        <div
+          className="container"
+          style={{
+            maxWidth: 1000,
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 8
+          }}
+        >
+          <form
+            style={{ display: 'flex', width: '100%', maxWidth: 480, gap: 0 }}
+            onSubmit={handleSearchClick}
+            role="search"
+            aria-label="Movie Search"
+          >
+            <input
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="Search by title, genre, or actor..."
+              style={{
+                width: 340,
+                maxWidth: '100%',
+                padding: '11px 20px',
+                fontSize: 17,
+                borderRadius: inputValue ? "8px 0 0 8px" : 8,
+                border: '1px solid #252525',
+                background: '#181818',
+                color: colors.secondary,
+                outline: 'none',
+                boxShadow: '0 1px 8px 0 #00000033',
+                marginRight: 0,
+                transition: 'border 0.2s',
+                fontWeight: 500
+              }}
+              aria-label="Search movies"
+              autoFocus={false}
+            />
+            <button
+              className="btn"
+              type="submit"
+              style={{
+                borderRadius: '0 8px 8px 0',
+                border: '1px solid #252525',
+                borderLeft: 'none',
+                background: colors.accent,
+                color: '#fff',
+                padding: '11px 25px',
+                fontWeight: 600,
+                fontSize: 16,
+                cursor: 'pointer',
+                minWidth: 80,
+              }}
+              aria-label="Search Button"
+            >
+              Search
+            </button>
+          </form>
         </div>
       </div>
 
