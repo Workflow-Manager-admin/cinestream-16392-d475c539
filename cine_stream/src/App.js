@@ -326,8 +326,8 @@ function CineStreamApp() {
           {/* Movie Grid + Recommendations: Only show the full grid if not searching;
               When a search is active, only display filtered movies (search matches) and their recommendations. */}
           <section id="catalog">
-            {(!query.trim()) ? (
-              // Show ALL movies (default landing grid, no search)
+            {/* When no search is active, show ALL movies (default landing grid) */}
+            {(!query.trim()) && (
               <div
                 className="movie-grid"
                 style={{
@@ -337,12 +337,12 @@ function CineStreamApp() {
                   paddingBottom: 50,
                 }}
               >
-                {filteredMovies.length === 0 && (
+                {movieCatalog.length === 0 && (
                   <div style={{ color: '#b2b2b2', fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: 70 }}>
                     No movies found.
                   </div>
                 )}
-                {filteredMovies.map(movie => (
+                {movieCatalog.map(movie => (
                   <div
                     key={movie.id}
                     tabIndex={0}
@@ -397,8 +397,9 @@ function CineStreamApp() {
                   </div>
                 ))}
               </div>
-            ) : (
-              // When SEARCH is active: show only searched (filtered) movies and the recommendations, each in their own section.
+            )}
+            {/* When search is active, only show searched (filtered) movies and recommendations */}
+            {(!!query.trim()) && (
               <>
                 <div
                   className="movie-grid"
