@@ -323,178 +323,254 @@ function CineStreamApp() {
         background: colors.primary
       }}>
         <div className="container" style={{ maxWidth: 1200 }}>
-          {/* Movie Grid */}
+          {/* Movie Grid + Recommendations: Only show the full grid if not searching;
+              When a search is active, only display filtered movies (search matches) and their recommendations. */}
           <section id="catalog">
-            <div
-              className="movie-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))',
-                gap: 32,
-                paddingBottom: 50,
-              }}
-            >
-              {filteredMovies.length === 0 && (
-                <div style={{ color: '#b2b2b2', fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: 70 }}>
-                  No movies found.
-                </div>
-              )}
-              {filteredMovies.map(movie => (
-                <div
-                  key={movie.id}
-                  tabIndex={0}
-                  className="movie-card"
-                  onClick={() => openMovieModal(movie)}
-                  style={{
-                    background: '#101010',
-                    borderRadius: 12,
-                    overflow: 'hidden',
-                    boxShadow: '0 3px 14px 0 #00000030',
-                    cursor: 'pointer',
-                    border: `1px solid #191919`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-end',
-                    minHeight: 320,
-                    transition: 'transform 0.18s',
-                  }}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && openMovieModal(movie)}
-                >
-                  <div style={{ width: '100%', minHeight: 230, overflow: 'hidden', background: '#2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img
-                      src={movie.poster}
-                      alt={movie.title + ' poster'}
-                      style={{
-                        width: '100%',
-                        objectFit: 'cover',
-                        height: 230,
-                        filter: 'brightness(0.90)',
-                        transition: 'transform 0.2s',
-                        display: 'block'
-                      }}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div style={{ padding: '14px 12px 8px', minHeight: 64 }}>
-                    <h2 style={{
-                      fontSize: 17,
-                      fontWeight: 600,
-                      margin: 0,
-                      marginBottom: 3,
-                      color: colors.secondary,
-                      lineHeight: 1.2,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {movie.title}
-                    </h2>
-                    <div style={{ color: colors.accent, fontWeight: 400, fontSize: 14 }}>{movie.genre}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Recommended Movies Section */}
-            {recommendedMovies.length > 0 && (
-              <section
-                className="recommended-section"
+            {(!query.trim()) ? (
+              // Show ALL movies (default landing grid, no search)
+              <div
+                className="movie-grid"
                 style={{
-                  marginTop: 34,
-                  padding: '20px 0 10px',
-                  borderRadius: 12,
-                  background: '#14141a',
-                  border: `1.5px solid ${colors.accent}`,
-                  boxShadow: '0 4px 16px 0 #00000020',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))',
+                  gap: 32,
+                  paddingBottom: 50,
                 }}
-                aria-label="Recommended Movies"
               >
-                <div style={{ paddingBottom: 10, paddingLeft: 11 }}>
-                  <h3
-                    style={{
-                      color: colors.accent,
-                      fontWeight: 700,
-                      fontSize: 22,
-                      margin: 0,
-                      letterSpacing: 1
-                    }}>
-                    Recommended
-                  </h3>
-                  <div style={{
-                    marginTop: 4,
-                    color: '#fff',
-                    fontWeight: 400,
-                    fontSize: 15,
-                    opacity: 0.76
-                  }}>
-                    Similar movies you might enjoy based on your search.
+                {filteredMovies.length === 0 && (
+                  <div style={{ color: '#b2b2b2', fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: 70 }}>
+                    No movies found.
                   </div>
-                </div>
+                )}
+                {filteredMovies.map(movie => (
+                  <div
+                    key={movie.id}
+                    tabIndex={0}
+                    className="movie-card"
+                    onClick={() => openMovieModal(movie)}
+                    style={{
+                      background: '#101010',
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      boxShadow: '0 3px 14px 0 #00000030',
+                      cursor: 'pointer',
+                      border: `1px solid #191919`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'flex-end',
+                      minHeight: 320,
+                      transition: 'transform 0.18s',
+                    }}
+                    onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && openMovieModal(movie)}
+                  >
+                    <div style={{ width: '100%', minHeight: 230, overflow: 'hidden', background: '#2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img
+                        src={movie.poster}
+                        alt={movie.title + ' poster'}
+                        style={{
+                          width: '100%',
+                          objectFit: 'cover',
+                          height: 230,
+                          filter: 'brightness(0.90)',
+                          transition: 'transform 0.2s',
+                          display: 'block'
+                        }}
+                        loading="lazy"
+                      />
+                    </div>
+                    <div style={{ padding: '14px 12px 8px', minHeight: 64 }}>
+                      <h2 style={{
+                        fontSize: 17,
+                        fontWeight: 600,
+                        margin: 0,
+                        marginBottom: 3,
+                        color: colors.secondary,
+                        lineHeight: 1.2,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {movie.title}
+                      </h2>
+                      <div style={{ color: colors.accent, fontWeight: 400, fontSize: 14 }}>{movie.genre}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // When SEARCH is active: show only searched (filtered) movies and the recommendations, each in their own section.
+              <>
                 <div
                   className="movie-grid"
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit,minmax(168px,1fr))',
-                    gap: 22,
-                    padding: '6px 0 12px 0'
+                    gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))',
+                    gap: 32,
+                    paddingBottom: 30,
                   }}
                 >
-                  {recommendedMovies.map(movie => (
+                  {filteredMovies.length === 0 && (
+                    <div style={{ color: '#b2b2b2', fontSize: 18, gridColumn: '1/-1', textAlign: 'center', padding: 50 }}>
+                      No movies found for your search.
+                    </div>
+                  )}
+                  {filteredMovies.map(movie => (
                     <div
                       key={movie.id}
                       tabIndex={0}
                       className="movie-card"
                       onClick={() => openMovieModal(movie)}
                       style={{
-                        background: '#18181f',
-                        borderRadius: 10,
+                        background: '#101010',
+                        borderRadius: 12,
                         overflow: 'hidden',
-                        boxShadow: '0 2px 10px 0 #0000002a',
+                        boxShadow: '0 3px 14px 0 #00000030',
                         cursor: 'pointer',
-                        border: `1px solid #222236`,
+                        border: `1px solid #191919`,
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'flex-end',
-                        minHeight: 250,
+                        minHeight: 320,
                         transition: 'transform 0.18s',
                       }}
                       onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && openMovieModal(movie)}
                     >
-                      <div style={{ width: '100%', minHeight: 120, overflow: 'hidden', background: '#23232a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: '100%', minHeight: 230, overflow: 'hidden', background: '#2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img
                           src={movie.poster}
                           alt={movie.title + ' poster'}
                           style={{
                             width: '100%',
                             objectFit: 'cover',
-                            height: 120,
-                            filter: 'brightness(0.92)',
+                            height: 230,
+                            filter: 'brightness(0.90)',
                             transition: 'transform 0.2s',
                             display: 'block'
                           }}
                           loading="lazy"
                         />
                       </div>
-                      <div style={{ padding: '9px 10px 6px', minHeight: 48 }}>
-                        <h4 style={{
-                          fontSize: 15,
+                      <div style={{ padding: '14px 12px 8px', minHeight: 64 }}>
+                        <h2 style={{
+                          fontSize: 17,
                           fontWeight: 600,
                           margin: 0,
-                          marginBottom: 2,
+                          marginBottom: 3,
                           color: colors.secondary,
-                          lineHeight: 1.13,
+                          lineHeight: 1.2,
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
                         }}>
                           {movie.title}
-                        </h4>
-                        <div style={{ color: colors.accent, fontWeight: 400, fontSize: 13 }}>{movie.genre}</div>
+                        </h2>
+                        <div style={{ color: colors.accent, fontWeight: 400, fontSize: 14 }}>{movie.genre}</div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </section>
+                {/* Show recommended movies for this search */}
+                {recommendedMovies.length > 0 && (
+                  <section
+                    className="recommended-section"
+                    style={{
+                      marginTop: 24,
+                      padding: '18px 0 8px',
+                      borderRadius: 12,
+                      background: '#14141a',
+                      border: `1.5px solid ${colors.accent}`,
+                      boxShadow: '0 4px 16px 0 #00000020',
+                    }}
+                    aria-label="Recommended Movies"
+                  >
+                    <div style={{ paddingBottom: 10, paddingLeft: 11 }}>
+                      <h3
+                        style={{
+                          color: colors.accent,
+                          fontWeight: 700,
+                          fontSize: 22,
+                          margin: 0,
+                          letterSpacing: 1
+                        }}>
+                        Recommended
+                      </h3>
+                      <div style={{
+                        marginTop: 4,
+                        color: '#fff',
+                        fontWeight: 400,
+                        fontSize: 15,
+                        opacity: 0.76
+                      }}>
+                        Similar movies you might enjoy based on your search.
+                      </div>
+                    </div>
+                    <div
+                      className="movie-grid"
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit,minmax(168px,1fr))',
+                        gap: 22,
+                        padding: '6px 0 12px 0'
+                      }}
+                    >
+                      {recommendedMovies.map(movie => (
+                        <div
+                          key={movie.id}
+                          tabIndex={0}
+                          className="movie-card"
+                          onClick={() => openMovieModal(movie)}
+                          style={{
+                            background: '#18181f',
+                            borderRadius: 10,
+                            overflow: 'hidden',
+                            boxShadow: '0 2px 10px 0 #0000002a',
+                            cursor: 'pointer',
+                            border: `1px solid #222236`,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end',
+                            minHeight: 250,
+                            transition: 'transform 0.18s',
+                          }}
+                          onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && openMovieModal(movie)}
+                        >
+                          <div style={{ width: '100%', minHeight: 120, overflow: 'hidden', background: '#23232a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <img
+                              src={movie.poster}
+                              alt={movie.title + ' poster'}
+                              style={{
+                                width: '100%',
+                                objectFit: 'cover',
+                                height: 120,
+                                filter: 'brightness(0.92)',
+                                transition: 'transform 0.2s',
+                                display: 'block'
+                              }}
+                              loading="lazy"
+                            />
+                          </div>
+                          <div style={{ padding: '9px 10px 6px', minHeight: 48 }}>
+                            <h4 style={{
+                              fontSize: 15,
+                              fontWeight: 600,
+                              margin: 0,
+                              marginBottom: 2,
+                              color: colors.secondary,
+                              lineHeight: 1.13,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}>
+                              {movie.title}
+                            </h4>
+                            <div style={{ color: colors.accent, fontWeight: 400, fontSize: 13 }}>{movie.genre}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </>
             )}
           </section>
         </div>
