@@ -104,6 +104,54 @@ function CineStreamApp() {
     });
   }, [query, movieCatalog]);
 
+  // Helper: simplified match for recommendations by overlap in genre/actor/keyword
+  function getRecommendedMovies(queryString, filteredMovies, allMovies) {
+    if (!queryString.trim() || filteredMovies.length === 0) return [];
+    const lQuery = queryString.toLowerCase();
+
+    function intersect(arr1, arr2) {
+      return arr1.some(x => arr2.includes(x));
+    }
+
+    // Collect genres & all actors from filteredMovies
+    const filteredGenres = new Set();
+    const filteredActors = new Set();
+    filteredMovies.forEach(movie => {
+      if (movie.genre) movie.genre.split(',').forEach(g => filteredGenres.add(g.trim().toLowerCase()));
+      if (movie.actors) movie.actors.forEach(a => filteredActors.add(a.toLowerCase()));
+    });
+
+    // Find movies not in filteredMovies, but "close" by genre/actor/keyword
+    return allMovies.filter(movie => {
+      if (filteredMovies.some(f => f.id === movie.id)) return false; // Exclude already-shown
+      let score = 0;
+      // Genre overlap
+      if (movie.genre) {
+        const movieGenres = movie.genre.split(',').map(g => g.trim().toLowerCase());
+        if (movieGenres.some(g => filteredGenres.has(g))) score += 2;
+      }
+      // Actor overlap
+      if (movie.actors) {
+        const movieActors = movie.actors.map(a => a.toLowerCase());
+        if (movieActors.some(a => filteredActors.has(a))) score += 2;
+      }
+      // Similarity by word overlap in title
+      if (movie.title && queryString) {
+        const movieWords = movie.title.toLowerCase().split(/\s+/);
+        const queryWords = lQuery.split(/\s+/);
+        if (movieWords.some(word => queryWords.includes(word))) score += 1;
+      }
+      // Fuzzy search: keyword present in description
+      if (movie.description && movie.description.toLowerCase().includes(lQuery)) score += 1;
+      return score > 0;
+    });
+  }
+  // Memoize recommendations for efficiency
+  const recommendedMovies = React.useMemo(
+    () => getRecommendedMovies(query, filteredMovies, movieCatalog),
+    [query, filteredMovies, movieCatalog]
+  );
+
   // Responsive classes and color variables
   const colors = {
     primary: '#000000',
